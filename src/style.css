@@ -1,0 +1,34 @@
+body {
+  margin: 0;
+}
+
+canvas {
+  width: 100%; height: 100%
+}
+
+#overlay {
+  display: flex;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+#overlay .content {
+  align-self: center;
+  position: absolute;
+  margin-top: auto;
+  left: 20%;
+  padding: 20px;
+  overflow-y: scroll;
+}
+
+.content p{
+  font-family: Baskerville;
+  font-size: 1em;
+  line-height: 1.5em;
+  margin-bottom: 2em;
+  webkit-transition: opacity 10s;
+  transition: opacity 10s;
+  transition-timing-function: ease-out;
+  opacity: 100%;
+}

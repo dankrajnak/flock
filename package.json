@@ -1,0 +1,15 @@
+{
+  "name": "flock",
+  "version": "1.0.0",
+  "description": "A 3D environment with flocking dots made with three.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel Krajnak",
+  "license": "ISC",
+  "dependencies": {
+    "npm": "^6.0.1",
+    "three": "^0.92.0"
+  }
+}
