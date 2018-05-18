@@ -42,6 +42,20 @@ for(let i = 0; i<numBirds; i++){
 
 let controls = new THREE.TrackballControls(camera);
 camera.position.z = 50;
+controls.noZoom=true;
+controls.noPan=true;
+controls.rotateSpeed = 2.0;
+
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize( window.innerWidth, window.innerHeight );
+
+  controls.handleResize(); // for TrackballControls
+}
 
 
 let animate = ()=>{
