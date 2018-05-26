@@ -4,12 +4,16 @@
   "description": "A 3D environment with flocking dots made with three.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src --out-file build/all.js --presets=env",
+    "build:watch": "babel src --out-file build/all.js --presets=env -w"
   },
   "author": "Daniel Krajnak",
   "license": "ISC",
   "dependencies": {
-    "npm": "^6.0.1",
+    "npm": "^6.1.0",
     "three": "^0.92.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0"
   }
 }

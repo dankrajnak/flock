@@ -19,7 +19,6 @@ class Bird{
   }
 
   step(){
-    // console.log('before accel', this.velocity);
     this.velocity.add(this.calcAccleration());
     this.velocity.clampLength(0, this.maxSpeed);
     this.position.add(this.velocity);
@@ -99,9 +98,22 @@ class Bird{
   }
 
   bound(){
-    if(this.position.distanceTo(new THREE.Vector3())> this.boundDistance){
-      this.position.multiplyScalar(-1);
+    if(this.position.x>this.boundDistance){
+      this.position.x -= 2*this.boundDistance;
+    } else if(this.position.x < -this.boundDistance){
+      this.position.x += 2*this.boundDistance;
+    }
 
+    if(this.position.y > this.boundDistance){
+      this.position.y -= 2*this.boundDistance;
+    } else if(this.position.y < -this.boundDistance){
+      this.position.y += 2*this.boundDistance;
+    }
+
+    if(this.position.z > this.boundDistance){
+      this.position.z -= 2*this.boundDistance;
+    } else if(this.position.z < -this.boundDistance){
+      this.position.z += 2*this.boundDistance;
     }
   }
 

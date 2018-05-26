@@ -18,13 +18,11 @@ canvas {
   z-index: 99999;
 }
 
-#overlay .content {
+/* For mobile phones */
+#overlay .content{
   align-self: center;
   position: absolute;
-  margin-top: auto;
-  left: 20%;
-  padding: 20px;
-  overflow-y: scroll;
+  left: 20px
 }
 
 .content p{
@@ -36,4 +34,20 @@ canvas {
   transition: opacity 10s;
   transition-timing-function: ease-out;
   opacity: 100%;
+}
+
+/* for desktop*/
+@media only screen and (min-width: 768px) {
+  #overlay .content {
+    align-self: center;
+    position: absolute;
+    margin-top: auto;
+    left: 20%;
+  }
+
+  .content p{
+    font-size: 1em;
+    line-height: 1.5em;
+    margin-bottom: 2em;
+  }
 }

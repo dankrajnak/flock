@@ -7,8 +7,9 @@ let fog = new THREE.Fog();
 fog.far = 100;
 fog.color = new THREE.Color('#F6E9D5');
 scene.fog = fog
+
 //args: FOV, apsect ration, near and far clipping planes
-let camera = new THREE.PerspectiveCamera(75, size.width/size.height, 0.1, 1000)
+let camera = new THREE.PerspectiveCamera(70, size.width/size.height, 0.1, 200)
 
 let renderer = new THREE.WebGLRenderer();
 renderer.setSize(size.width, size.height);
@@ -16,10 +17,11 @@ renderer.setSize(size.width, size.height);
 //Add canvas to HTML body
 document.body.appendChild(renderer.domElement);
 
-//Let's draw a cube to see if this works.
-
 let geometry = new THREE.SphereBufferGeometry(.5, 32, 32 );
-let material = new THREE.MeshBasicMaterial( { color: 0x222 } );
+
+// This color below isn't actually #222, it's actually #000222.  I originally intended
+// to make it #222, but the slight blue is actually super nice.
+let material = new THREE.MeshBasicMaterial({color: 0x222});
 let cube = new THREE.Mesh(geometry, material);
 let otherCube = new THREE.Mesh(geometry, material);
 
@@ -46,13 +48,13 @@ controls.noZoom=true;
 controls.noPan=true;
 controls.rotateSpeed = 2.0;
 
-window.addEventListener( 'resize', onWindowResize, false );
+window.addEventListener('resize', onWindowResize, false);
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 
-  renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.setSize(window.innerWidth, window.innerHeight);
 
   controls.handleResize(); // for TrackballControls
 }
@@ -70,7 +72,12 @@ let animate = ()=>{
 animate();
 
 setTimeout(()=>{
+  let index = 0
   for(let p of document.getElementsByTagName('p')){
-    p.style.opacity = 0;
+
+    setTimeout(()=>{
+      p.style.opacity = 0;
+    }, index++ * 750);
+
   };
 }, 20*1000)
