@@ -261,6 +261,82 @@ var Flock = function () {
 
   return Flock;
 }();
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var RandFlock = function () {
+  function RandFlock(birds) {
+    var _this = this;
+
+    _classCallCheck(this, RandFlock);
+
+    var numNeighborhoods = 10;
+    this._neighborhoods = [];
+    for (var i = 0; i < numNeighborhoods; i++) {
+      this._neighborhoods.push(new Set());
+    }
+    if (birds) {
+      birds.forEach(function (bird) {
+        _this._neighborhoods[Math.floor(Math.random() * numNeighborhoods)].add(bird);
+      });
+    }
+    //Reset neighborhoods every 45 seconds.
+    this.resetInterval = setInterval(function () {
+      var allBirds = [];
+      _this._neighborhoods.forEach(function (neighborhood) {
+        neighborhood.forEach(function (bird) {
+          return allBirds.push(bird);
+        });
+        neighborhood.clear();
+      });
+      allBirds.forEach(function (bird) {
+        return _this._neighborhoods[Math.floor(Math.random() * _this._neighborhoods.length)].add(bird);
+      });
+    }, 45 * 1000);
+  }
+
+  _createClass(RandFlock, [{
+    key: "addBird",
+    value: function addBird(bird) {
+      this._neighborhoods[Math.floor(Math.random() * this._neighborhoods.length)].add(bird);
+    }
+  }, {
+    key: "getNeighbors",
+    value: function getNeighbors(bird) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this._neighborhoods[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var neighborhood = _step.value;
+
+          if (neighborhood.has(bird)) {
+            return Array.from(neighborhood);
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  }]);
+
+  return RandFlock;
+}();
 'use strict';
 
 var size = { width: window.innerWidth, height: window.innerHeight };
@@ -289,7 +365,7 @@ var material = new THREE.MeshBasicMaterial({ color: 0x222 });
 var cube = new THREE.Mesh(geometry, material);
 var otherCube = new THREE.Mesh(geometry, material);
 
-var flock = new Flock();
+var flock = new RandFlock();
 var flockArray = [];
 var shapeArray = [];
 var numBirds = 300;

@@ -25,7 +25,7 @@ let material = new THREE.MeshBasicMaterial({color: 0x222});
 let cube = new THREE.Mesh(geometry, material);
 let otherCube = new THREE.Mesh(geometry, material);
 
-const flock = new Flock();
+const flock = new RandFlock();
 let flockArray = [];
 let shapeArray = [];
 let numBirds = 300;
