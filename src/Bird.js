@@ -31,8 +31,13 @@ class Bird{
     this.separation = this.separate(neighbors).multiplyScalar(this.separationWeight);
     this.alignment = this.getAlignment(neighbors).multiplyScalar(this.alignmentWeight);
     this.cohesion = this.cohere(neighbors).multiplyScalar(this.cohesionWeight);
+    this.flockSpecificBehaviors = new THREE.Vector3();
+    flock.behaviors.forEach((behavior)=>{
+      this.flockSpecificBehaviors.add(behavior(this));
+    });
 
-    return this.separation.add(this.alignment).add(this.cohesion);
+
+    return this.separation.add(this.alignment).add(this.cohesion).add(this.flockSpecificBehaviors);
   }
 
   cohere(neighbors){

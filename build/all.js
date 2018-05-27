@@ -37,12 +37,18 @@ var Bird = function () {
   }, {
     key: "calcAccleration",
     value: function calcAccleration() {
+      var _this = this;
+
       var neighbors = flock.getNeighbors(this);
       this.separation = this.separate(neighbors).multiplyScalar(this.separationWeight);
       this.alignment = this.getAlignment(neighbors).multiplyScalar(this.alignmentWeight);
       this.cohesion = this.cohere(neighbors).multiplyScalar(this.cohesionWeight);
+      this.flockSpecificBehaviors = new THREE.Vector3();
+      flock.behaviors.forEach(function (behavior) {
+        _this.flockSpecificBehaviors.add(behavior(_this));
+      });
 
-      return this.separation.add(this.alignment).add(this.cohesion);
+      return this.separation.add(this.alignment).add(this.cohesion).add(this.flockSpecificBehaviors);
     }
   }, {
     key: "cohere",
@@ -271,9 +277,10 @@ var RandFlock = function () {
   function RandFlock(birds) {
     var _this = this;
 
+    var numNeighborhoods = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
     _classCallCheck(this, RandFlock);
 
-    var numNeighborhoods = 10;
     this._neighborhoods = [];
     for (var i = 0; i < numNeighborhoods; i++) {
       this._neighborhoods.push(new Set());
@@ -296,28 +303,26 @@ var RandFlock = function () {
         return _this._neighborhoods[Math.floor(Math.random() * _this._neighborhoods.length)].add(bird);
       });
     }, 45 * 1000);
-  }
 
-  _createClass(RandFlock, [{
-    key: "addBird",
-    value: function addBird(bird) {
-      this._neighborhoods[Math.floor(Math.random() * this._neighborhoods.length)].add(bird);
-    }
-  }, {
-    key: "getNeighbors",
-    value: function getNeighbors(bird) {
+    //Extra behioviors for each bird
+    this.behaviors = [];
+    var avoidOtherNeighborHoods = function avoidOtherNeighborHoods(bird) {
+      //Find all the birds in other neighborhoods
+      var otherNeighborhoodBirds = [];
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = this._neighborhoods[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (var _iterator = _this._neighborhoods[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var neighborhood = _step.value;
 
-          if (neighborhood.has(bird)) {
-            return Array.from(neighborhood);
+          if (!neighborhood.has(bird)) {
+            otherNeighborhoodBirds.concat(Array.from(neighborhood));
           }
         }
+
+        //Look through all these to find birds within distance
       } catch (err) {
         _didIteratorError = true;
         _iteratorError = err;
@@ -329,6 +334,58 @@ var RandFlock = function () {
         } finally {
           if (_didIteratorError) {
             throw _iteratorError;
+          }
+        }
+      }
+
+      var maxDistance = 5;
+      var meanVelocity = new THREE.Vector3();
+      var count = 0;
+      otherNeighborhoodBirds.forEach(function (otherBird) {
+        var distance = otherBird.position.distanceTo(bird.position);
+        if (distance < maxDistance) {
+          meanVelocity.add(new THREE.Vector3().subVectors(otherBird.position, bird.position).normalize().divideScalar(distance));
+          count++;
+        }
+      });
+      if (count > 1) meanVelocity.divideScalar(count);
+      return meanVelocity;
+    };
+
+    this.behaviors.push(avoidOtherNeighborHoods);
+  }
+
+  _createClass(RandFlock, [{
+    key: "addBird",
+    value: function addBird(bird) {
+      this._neighborhoods[Math.floor(Math.random() * this._neighborhoods.length)].add(bird);
+    }
+  }, {
+    key: "getNeighbors",
+    value: function getNeighbors(bird) {
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = this._neighborhoods[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var neighborhood = _step2.value;
+
+          if (neighborhood.has(bird)) {
+            return Array.from(neighborhood);
+          }
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }
@@ -357,7 +414,7 @@ renderer.setSize(size.width, size.height);
 //Add canvas to HTML body
 document.body.appendChild(renderer.domElement);
 
-var geometry = new THREE.SphereBufferGeometry(.5, 32, 32);
+var geometry = new THREE.SphereBufferGeometry(.5, 12, 12);
 
 // This color below isn't actually #222, it's actually #000222.  I originally intended
 // to make it #222, but the slight blue is actually super nice.

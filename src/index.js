@@ -17,7 +17,7 @@ renderer.setSize(size.width, size.height);
 //Add canvas to HTML body
 document.body.appendChild(renderer.domElement);
 
-let geometry = new THREE.SphereBufferGeometry(.5, 32, 32 );
+let geometry = new THREE.SphereBufferGeometry(.5, 12, 12 );
 
 // This color below isn't actually #222, it's actually #000222.  I originally intended
 // to make it #222, but the slight blue is actually super nice.
